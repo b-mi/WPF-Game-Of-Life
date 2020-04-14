@@ -8,6 +8,15 @@ namespace GameOfLife
     public class BaseRules : IRules
     {
         GOLCell[,] cells;
+        private HashSet<int> survive;
+        private HashSet<int> reborn;
+
+        public BaseRules(int[] survive, int[] reborn)
+        {
+            this.survive = new HashSet<int>(survive);
+            this.reborn = new HashSet<int>(reborn);
+
+        }
 
         public void GetInfo(GOLCell cell, out int liveCount)
         {
@@ -20,7 +29,7 @@ namespace GameOfLife
 
         }
 
-        public CellState GetNewState(GOLCell cell, int x, int y)
+        public CellState GetNewState(GOLCell cell)
         {
             if (cell.State == CellState.Live)
             {
@@ -28,19 +37,19 @@ namespace GameOfLife
                 // 2. 2 or 3 liveneighbours = Live
                 // 3. more than 3 live neighbours = Dead
 
-                if (cell.LiveCount < 2 || cell.LiveCount > 3)
+                if (survive.Contains(cell.LiveCount))
                 {
-                    return CellState.Dead;
+                    return CellState.Live;
                 }
                 else
                 {
-                    return CellState.Live;
+                    return CellState.Dead;
                 }
             }
             else
             {
                 // 4. 3 lives around dead - live
-                if (cell.LiveCount == 3)
+                if (reborn.Contains(cell.LiveCount))
                 {
                     return CellState.Live;
                 }

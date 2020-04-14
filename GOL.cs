@@ -18,10 +18,12 @@ namespace GameOfLife
         double rctWidth, rctHeight;
         Brush liveBrush = Brushes.Orange;
         Brush deadBrush = Brushes.WhiteSmoke;
+        DispatcherTimer timer;
 
         public IRules Rules { get; private set; }
 
         public GOLCell[,] Cells { get; private set; }
+        List<GOLCell> lstCells;
 
         public GOL(Canvas canvas, int width, int height, IRules rules)
         {
@@ -36,13 +38,15 @@ namespace GameOfLife
             rctWidth = rctHeight = Math.Min(rctWidth, rctHeight);
 
             Cells = new GOLCell[width, height];
+            lstCells = new List<GOLCell>();
             rules.SetCells(Cells);
             // create cells
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    var cell = new GOLCell();
+                    var cell = new GOLCell(x, y);
+                    lstCells.Add(cell);
                     Cells[x, y] = cell;
                     cell.Left = x * rctWidth;
                     cell.Top = y * rctHeight;
@@ -89,12 +93,15 @@ namespace GameOfLife
 
         internal void Start()
         {
-            var a = canvas.Dispatcher.BeginInvoke((Action)(() =>
+            timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+            timer.Tick += (o, e) =>
             {
+                timer.Stop();
                 UpdateLife();
-            }), DispatcherPriority.SystemIdle);
-            a.Completed += (o, e) => { Start(); };
+                timer.Start();
 
+            };
+            timer.Start();
         }
 
         internal void UpdateLife()
@@ -104,7 +111,7 @@ namespace GameOfLife
                 for (int x = 0; x < width; x++)
                 {
                     var cell = Cells[x, y];
-                    var newState = Rules.GetNewState(cell, x, y);
+                    var newState = Rules.GetNewState(cell);
                     if (cell.State != newState)
                     {
                         SetState(cell, newState);
@@ -114,6 +121,41 @@ namespace GameOfLife
 
             RefreshCellsInfo();
         }
+
+        internal void RefreshCellsInfo()
+        {
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    var cell = Cells[x, y];
+                    Rules.GetInfo(cell, out var liveCount);
+                    cell.LiveCount = liveCount;
+                    // cell.Rect.ToolTip = $"x: {x}, y: {y}, live: {liveCount}";
+                }
+            }
+        }
+
+        public void AddPattern0()
+        {
+            int x = (int)(width / 2);
+            int y = (int)(height / 2);
+
+            for (int xx = 0; xx < 11; xx++)
+            {
+                SetState(Cells[x + xx, y + xx], CellState.Live);
+                SetState(Cells[x + xx - 1, y + xx], CellState.Live);
+                SetState(Cells[x + xx + 2, y + xx], CellState.Live);
+
+
+                SetState(Cells[x + xx, y - xx], CellState.Live);
+                SetState(Cells[x + xx - 1, y - xx], CellState.Live);
+                SetState(Cells[x + xx + 2, y - xx], CellState.Live);
+            }
+
+            RefreshCellsInfo();
+        }
+
 
         public void AddPattern1()
         {
@@ -160,19 +202,7 @@ namespace GameOfLife
         }
 
 
-        internal void RefreshCellsInfo()
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    var cell = Cells[x, y];
-                    Rules.GetInfo(cell, out var liveCount);
-                    cell.LiveCount = liveCount;
-                    cell.Rect.ToolTip = $"x: {x}, y: {y}, live: {liveCount}";
-                }
-            }
-        }
+
 
         internal void SetState(GOLCell cell, CellState state)
         {
@@ -208,8 +238,13 @@ namespace GameOfLife
         public CellState State { get; internal set; }
         public int LiveCount { get; internal set; }
 
-        public GOLCell()
+        public int X { get; private set; }
+        public int Y { get; private set; }
+
+        public GOLCell(int x, int y)
         {
+            X = x;
+            Y = y;
             AroundCells = new List<GOLCell>();
         }
     }
