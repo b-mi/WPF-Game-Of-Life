@@ -7,15 +7,50 @@
         mc:Ignorable="d"
         Loaded="Window_Loaded" WindowState="Maximized"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5 0"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5 0"/>
+            <Setter Property="MinWidth" Value="50"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5 0"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="SelectedIndex" Value="0"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5 0"/>
+            <Setter Property="MinWidth" Value="100"/>
+        </Style>
+    </Window.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="40"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <DockPanel>
-            <Button Click="Button_Click">step</Button>
+            <TextBlock Text="Width:"></TextBlock>
+            <TextBox Text="{Binding AreaWidth}"></TextBox>
+            
+            <TextBlock Text="Height:"></TextBlock>
+            <TextBox Text="{Binding AreaHeight}"></TextBox>
+
+            <TextBlock Text="Pattern:"></TextBlock>
+            <ComboBox Name="cbPat" ItemsSource="{Binding Patterns}" SelectedItem="{Binding Pattern}"></ComboBox>
+            
+            <TextBlock Text="Configuration:"></TextBlock>
+            <ComboBox Name="cbCon" ItemsSource="{Binding Configs}" SelectedItem="{Binding Config}"></ComboBox>
+
+            <TextBlock Text="Conway's Game Of Life"></TextBlock>
+            <Button x:Name="bRun" Click="Button_Click" HorizontalAlignment="Right" Width="100">Start</Button>
         </DockPanel>
-        <Canvas x:Name="canvas" Grid.Column="1" Background="AliceBlue">
+        <Canvas x:Name="canvas" Grid.Row="1" Background="AliceBlue">
         </Canvas>
     </Grid>
 </Window>

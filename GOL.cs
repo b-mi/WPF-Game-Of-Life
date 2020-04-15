@@ -19,14 +19,18 @@ namespace GameOfLife
         Brush liveBrush = Brushes.Orange;
         Brush deadBrush = Brushes.WhiteSmoke;
         DispatcherTimer timer;
+        Func<bool> isStopped;
+        Action wasStopped;
 
         public IRules Rules { get; private set; }
 
         public GOLCell[,] Cells { get; private set; }
         List<GOLCell> lstCells;
 
-        public GOL(Canvas canvas, int width, int height, IRules rules)
+        public GOL(Canvas canvas, int width, int height,IRules rules, Func<bool> isStopped, Action wasStopped)
         {
+            this.isStopped = isStopped;
+            this.wasStopped = wasStopped;
             this.Rules = rules;
             this.canvas = canvas;
             this.width = width;
@@ -57,7 +61,7 @@ namespace GameOfLife
                         Stroke = Brushes.LightGray,
                         StrokeThickness = 0.6
                     };
-                    cell.Rect.ToolTip = "0";
+                    //cell.Rect.ToolTip = "0";
                     cell.Rect.Tag = cell;
                     Canvas.SetLeft(cell.Rect, cell.Left);
                     Canvas.SetTop(cell.Rect, cell.Top);
@@ -91,6 +95,8 @@ namespace GameOfLife
 
         }
 
+
+
         internal void Start()
         {
             timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
@@ -98,8 +104,13 @@ namespace GameOfLife
             {
                 timer.Stop();
                 UpdateLife();
-                timer.Start();
-
+                if (!isStopped())
+                {
+                    timer.Start();
+                } else
+                {
+                    wasStopped();
+                }
             };
             timer.Start();
         }

@@ -11,10 +11,17 @@ namespace GameOfLife
         private HashSet<int> survive;
         private HashSet<int> reborn;
 
-        public BaseRules(int[] survive, int[] reborn)
+        public BaseRules(string cfg)
         {
-            this.survive = new HashSet<int>(survive);
-            this.reborn = new HashSet<int>(reborn);
+            // "12345/3"
+            var parts = cfg.Split('/');
+            var strSurvive = parts[0].ToCharArray();
+            var strReborn = parts[1].ToCharArray();
+            var iaSurvive = strSurvive.Select(r => int.Parse(r.ToString()));
+            var iaReborn = strReborn.Select(r => int.Parse(r.ToString()));
+
+            this.survive = new HashSet<int>(iaSurvive);
+            this.reborn = new HashSet<int>(iaReborn);
 
         }
 
