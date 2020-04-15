@@ -13,7 +13,6 @@ namespace GameOfLife
 
         public BaseRules(string cfg)
         {
-            // "12345/3"
             var parts = cfg.Split('/');
             var strSurvive = parts[0].ToCharArray();
             var strReborn = parts[1].ToCharArray();

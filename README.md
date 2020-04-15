@@ -7,6 +7,7 @@ Features:
 - Configurable map size
 - Sample patterns
 - A few known configurations (live neighbours to stay alive / live neighbours reborn)
+- Base rules implementation, possible new rules by IRules interface implementation
 
 
 More info:
