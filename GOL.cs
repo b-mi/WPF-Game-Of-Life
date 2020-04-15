@@ -142,7 +142,6 @@ namespace GameOfLife
                     var cell = Cells[x, y];
                     Rules.GetInfo(cell, out var liveCount);
                     cell.LiveCount = liveCount;
-                    // cell.Rect.ToolTip = $"x: {x}, y: {y}, live: {liveCount}";
                 }
             }
         }

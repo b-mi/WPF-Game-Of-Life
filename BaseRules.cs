@@ -37,12 +37,8 @@ namespace GameOfLife
 
         public CellState GetNewState(GOLCell cell)
         {
-            if (cell.State == CellState.Live)
+            if (cell.State == CellState.Live) // calculate state for live cell
             {
-                // 1. less than 2 live neighbours = Dead
-                // 2. 2 or 3 liveneighbours = Live
-                // 3. more than 3 live neighbours = Dead
-
                 if (survive.Contains(cell.LiveCount))
                 {
                     return CellState.Live;
@@ -52,9 +48,8 @@ namespace GameOfLife
                     return CellState.Dead;
                 }
             }
-            else
+            else // calculate state for dead cell
             {
-                // 4. 3 lives around dead - live
                 if (reborn.Contains(cell.LiveCount))
                 {
                     return CellState.Live;
