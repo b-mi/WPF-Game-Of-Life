@@ -30,7 +30,7 @@ namespace GameOfLife
 
         // Using a DependencyProperty as the backing store for AreaWidth.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AreaWidthProperty =
-            DependencyProperty.Register("AreaWidth", typeof(int), typeof(MainWindow), new PropertyMetadata(76));
+            DependencyProperty.Register("AreaWidth", typeof(int), typeof(MainWindow), new PropertyMetadata(60));
 
 
         public int AreaHeight
@@ -41,7 +41,7 @@ namespace GameOfLife
 
         // Using a DependencyProperty as the backing store for AreaHeight.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AreaHeightProperty =
-            DependencyProperty.Register("AreaHeight", typeof(int), typeof(MainWindow), new PropertyMetadata(77));
+            DependencyProperty.Register("AreaHeight", typeof(int), typeof(MainWindow), new PropertyMetadata(60));
 
         public string[] Patterns { get => patterns; set => patterns = value; }
 

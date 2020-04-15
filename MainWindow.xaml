@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GameOfLife"
         mc:Ignorable="d"
         Loaded="Window_Loaded" WindowState="Maximized"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Conway's Game Of Life" Height="450" Width="800">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -47,7 +47,6 @@
             <TextBlock Text="Configuration:"></TextBlock>
             <ComboBox Name="cbCon" ItemsSource="{Binding Configs}" SelectedItem="{Binding Config}"></ComboBox>
 
-            <TextBlock Text="Conway's Game Of Life"></TextBlock>
             <Button x:Name="bRun" Click="Button_Click" HorizontalAlignment="Right" Width="100">Start</Button>
         </DockPanel>
         <Canvas x:Name="canvas" Grid.Row="1" Background="AliceBlue">
