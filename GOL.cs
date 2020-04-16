@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -27,7 +25,7 @@ namespace GameOfLife
         public GOLCell[,] Cells { get; private set; }
         List<GOLCell> lstCells;
 
-        public GOL(Canvas canvas, int width, int height,IRules rules, Func<bool> isStopped, Action wasStopped)
+        public GOL(Canvas canvas, int width, int height, IRules rules, Func<bool> isStopped, Action wasStopped)
         {
             this.isStopped = isStopped;
             this.wasStopped = wasStopped;
@@ -107,7 +105,8 @@ namespace GameOfLife
                 if (!isStopped())
                 {
                     timer.Start();
-                } else
+                }
+                else
                 {
                     wasStopped();
                 }
