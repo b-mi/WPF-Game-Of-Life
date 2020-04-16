@@ -24,7 +24,6 @@ namespace GameOfLife
 
         public GOLCell[,] Cells { get; private set; }
         List<GOLCell> lstCells;
-        Dictionary<string, GOLCell> dctCellsToRecalc;
 
         public bool ToroidalMove { get; private set; } = true;
 
