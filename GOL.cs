@@ -24,8 +24,11 @@ namespace GameOfLife
 
         public GOLCell[,] Cells { get; private set; }
         List<GOLCell> lstCells;
+        Dictionary<string, GOLCell> dctCellsToRecalc;
 
-        public GOL(Canvas canvas, int width, int height, IRules rules, Func<bool> isStopped, Action wasStopped)
+        public bool ToroidalMove { get; private set; } = true;
+
+        public GOL(Canvas canvas, int width, int height, string pattern, IRules rules, Func<bool> isStopped, Action wasStopped)
         {
             this.isStopped = isStopped;
             this.wasStopped = wasStopped;
@@ -83,12 +86,29 @@ namespace GameOfLife
 
                             var ary = y + ay;
                             var arx = x + ax;
-                            if (!isValid(arx, ary)) continue;
-                            cell.AroundCells.Add(Cells[arx, ary]);
+                            if (!isValidNeighbour(arx, ary, out var oarx, out var oary)) continue;
+                            cell.AroundCells.Add(Cells[oarx, oary]);
                         }
                     }
 
                 }
+            }
+            switch (pattern)
+            {
+                case "Test1":
+                    AddPatternTest1();
+                    break;
+                case "Test2":
+                    AddPatternTest2();
+                    break;
+                case "Test3":
+                    AddPatternTest3();
+                    break;
+                case "Test4":
+                    AddPatternTest4();
+                    break;
+                default:
+                    break;
             }
 
         }
@@ -122,10 +142,7 @@ namespace GameOfLife
                 {
                     var cell = Cells[x, y];
                     var newState = Rules.GetNewState(cell);
-                    if (cell.State != newState)
-                    {
-                        SetState(cell, newState);
-                    }
+                    SetState(cell, newState);
                 }
             }
 
@@ -145,7 +162,7 @@ namespace GameOfLife
             }
         }
 
-        public void AddPattern0()
+        public void AddPatternTest1()
         {
             int x = (int)(width / 2);
             int y = (int)(height / 2);
@@ -166,7 +183,7 @@ namespace GameOfLife
         }
 
 
-        public void AddPattern1()
+        public void AddPatternTest2()
         {
             int x = (int)(width / 2);
             int y = (int)(height / 2);
@@ -186,7 +203,7 @@ namespace GameOfLife
             RefreshCellsInfo();
         }
 
-        public void AddPattern2()
+        public void AddPatternTest3()
         {
             int x = (int)(width / 2);
             int y = (int)(height / 2);
@@ -198,7 +215,7 @@ namespace GameOfLife
             RefreshCellsInfo();
         }
 
-        public void AddPattern3()
+        public void AddPatternTest4()
         {
             int x = (int)(width / 2);
             int y = (int)(height / 2);
@@ -215,25 +232,43 @@ namespace GameOfLife
 
         internal void SetState(GOLCell cell, CellState state)
         {
-            cell.State = state;
-            switch (state)
+            if (cell.State != state)
             {
-                case CellState.Live:
-                    cell.Rect.Fill = liveBrush;
-                    break;
-                case CellState.Dead:
-                    cell.Rect.Fill = deadBrush;
-                    break;
-                default:
-                    break;
+                cell.State = state;
+                switch (state)
+                {
+                    case CellState.Live:
+                        cell.Rect.Fill = liveBrush;
+                        break;
+                    case CellState.Dead:
+                        cell.Rect.Fill = deadBrush;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
-        private bool isValid(int arx, int ary)
+        private bool isValidNeighbour(int inputX, int inputY, out int outX, out int outY)
         {
-            if (arx < 0 || ary < 0) return false;
-            if (arx >= width || ary >= height) return false;
-            return true;
+            if (ToroidalMove)
+            {
+                outX = inputX;
+                outY = inputY;
+                if (inputX == -1) outX = width - 1;
+                if (inputY == -1) outY = height - 1;
+                if (inputX == width) outX = 0;
+                if (inputY == width) outY = 0;
+                return true;
+            }
+            else
+            {
+                outX = inputX;
+                outY = inputY;
+                if (inputX < 0 || inputY < 0) return false;
+                if (inputX >= width || inputY >= height) return false;
+                return true;
+            }
         }
     }
 
@@ -246,12 +281,14 @@ namespace GameOfLife
         public Rectangle Rect { get; internal set; }
         public CellState State { get; internal set; }
         public int LiveCount { get; internal set; }
+        public string Key { get; private set; }
 
         public int X { get; private set; }
         public int Y { get; private set; }
 
         public GOLCell(int x, int y)
         {
+            this.Key = $"{x}|{y}";
             X = x;
             Y = y;
             AroundCells = new List<GOLCell>();

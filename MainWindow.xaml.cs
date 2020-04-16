@@ -117,24 +117,8 @@ namespace GameOfLife
             var wdth = this.AreaWidth;
             var hgh = this.AreaHeight;
             this.isRun = true;
-            gol = new GOL(canvas, wdth, hgh, new BaseRules(cfg), IsStopped, WasStopped);
-            switch (ptrn)
-            {
-                case "Test1":
-                    gol.AddPattern0();
-                    break;
-                case "Test2":
-                    gol.AddPattern1();
-                    break;
-                case "Test3":
-                    gol.AddPattern2();
-                    break;
-                case "Test4":
-                    gol.AddPattern3();
-                    break;
-                default:
-                    break;
-            }
+            gol = new GOL(canvas, wdth, hgh, ptrn, new BaseRules(cfg), IsStopped, WasStopped);
+
         }
 
         bool IsStopped()
